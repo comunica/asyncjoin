@@ -22,9 +22,9 @@ class MergeStream extends AsyncIterator
             this.close();
     }
     
-    get readable() { return this.streams.some(stream => stream.readable); }
-    get closed()   { return this.streams.every(stream => stream.closed);  }
-    get ended()    { return this.streams.every(stream => stream.ended);   }
+    get readable() { return this.streams.some (stream => stream.readable); }
+    get closed()   { return this.streams.every(stream => stream.closed);   }
+    get ended()    { return this.streams.every(stream => stream.ended);    }
     
     close ()
     {
