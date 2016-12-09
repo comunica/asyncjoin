@@ -7,10 +7,21 @@ let IntegerIterator = require('asynciterator').IntegerIterator;
 // stream.on('data', console.log);
 // stream.on('end', () => console.log('END'));
 
-let NestedLoopJoin = require('./join/NestedLoopJoin');
-let stream = new NestedLoopJoin(
+// let NestedLoopJoin = require('./join/NestedLoopJoin');
+// let stream = new NestedLoopJoin(
+//     new IntegerIterator({ start: 0, end: 2 }),
+//     new IntegerIterator({ start: 100, end: 102 }),
+//     (l, r) => { return {left: l, right:r} }
+// );
+//
+// stream.on('data', console.log);
+// stream.on('end', () => console.log('END'));
+
+let SymmetricHashJoin = require('./join/SymmetricHashJoin');
+let stream = new SymmetricHashJoin(
     new IntegerIterator({ start: 0, end: 2 }),
     new IntegerIterator({ start: 100, end: 102 }),
+    (item) => "HASH",
     (l, r) => { return {left: l, right:r} }
 );
 
