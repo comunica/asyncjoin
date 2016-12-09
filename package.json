@@ -1,0 +1,13 @@
+{
+  "name": "asyncjoin",
+  "version": "0.0.1",
+  "description": "Join library for asynciterator",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@git.datasciencelab.ugent.be:4444/jvherweg/asyncjoin.git"
+  },
+  "dependencies": {
+    "asynciterator": "^1.1.0"
+  }
+}
