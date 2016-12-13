@@ -1,6 +1,7 @@
 
 let AsyncIterator = require('asynciterator');
 
+// https://en.wikipedia.org/wiki/Symmetric_Hash_Join
 class SymmetricHashJoin extends AsyncIterator
 {
     constructor (left, right, funHash, funJoin)
@@ -59,7 +60,7 @@ class SymmetricHashJoin extends AsyncIterator
         while (this.matchIdx < this.matches.length)
         {
             let item = this.matches[this.matchIdx++];
-            let result = this.usedLeft ? this.funJoin(this.match, item) : this.funJoin(item, this.match) ;
+            let result = this.usedLeft ? this.funJoin(this.match, item) : this.funJoin(item, this.match);
             if (result !== null)
                 return result;
         }
@@ -93,7 +94,7 @@ class SymmetricHashJoin extends AsyncIterator
         arr.push(item);
     
         this.match = item;
-        this.matches = (this.usedLeft ? this.rightMap : this.leftMap).get(this.funHash(item)) || [];
+        this.matches = (this.usedLeft ? this.rightMap : this.leftMap).get(hash) || [];
         this.matchIdx = 0;
         
         // array is filled again so recursive call can have results
