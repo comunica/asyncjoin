@@ -20,7 +20,7 @@ let IntegerIterator = require('asynciterator').IntegerIterator;
 let SymmetricHashJoin = require('./join/SymmetricHashJoin');
 let stream = new SymmetricHashJoin(
     new IntegerIterator({ start: 0, end: 2 }),
-    new IntegerIterator({ start: 100, end: 102 }),
+    new IntegerIterator({ start: 100, end: 104 }),
     (item) => "HASH",
     (l, r) => { return {left: l, right:r} }
 );

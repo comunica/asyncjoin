@@ -7,39 +7,46 @@ class SymmetricHashJoin extends AsyncIterator
     {
         super();
         
-        this.left = left;
+        this.left  = left;
         this.right = right;
-        this.useLeft = true;
         
         this.funHash = funHash;
         this.funJoin = funJoin;
-        
-        this.leftMap = new Map();
+    
+        this.usedLeft = false;
+        this.leftMap  = new Map();
         this.rightMap = new Map();
         
-        this.on('end', () =>
-        {
-            this.leftMap = null;
-            this.rightMap = null;
-        });
+        this.on('end', () => this._cleanup() );
         
-        this.match = null;
-        this.matches = [];
+        this.match    = null;
+        this.matches  = [];
         this.matchIdx = 0;
         
-        this.left.on ('readable', () => { if (this.useLeft)  this.emit('readable'); });
-        this.right.on('readable', () => { if (!this.useLeft) this.emit('readable'); });
+        this.left.on ('readable', () => this.readable = true);
+        this.right.on('readable', () => this.readable = true);
         
-        this.left.on('end', () => { if (this.ended) this.emit('end'); });
-        this.right.on('end', () => { if (this.ended) this.emit('end'); });
+        // this needs to be here since it's possible the left/right streams only get ended after there are no more results left
+        this.left.on ('end', () => { if (!this.hasResults()) this._end(); });
+        this.right.on('end', () => { if (!this.hasResults()) this._end(); });
     }
     
-    get readable() { return this.matchIdx < this.matches.length || (this.useLeft && this.left.readable) || (!this.useLeft && this.right.readable) }
-    get closed()   { return this.left.closed && this.right.closed }
-    get ended()    { return this.left.ended  && this.right.ended && this.matchIdx >= this.matches.length; }
+    hasResults()
+    {
+        return !this.left.ended  || !this.right.ended || this.matchIdx < this.matches.length;
+    }
+    
+    _cleanup ()
+    {
+        // motivate garbage collector to remove these
+        this.leftMap = null;
+        this.rightMap = null;
+        this.matches = null;
+    }
     
     close ()
     {
+        super.close();
         this.left.close();
         this.right.close();
     }
@@ -47,40 +54,50 @@ class SymmetricHashJoin extends AsyncIterator
     read ()
     {
         if (this.ended)
-        {
-            this.emit('end');
             return null;
-        }
         
         while (this.matchIdx < this.matches.length)
         {
             let item = this.matches[this.matchIdx++];
-            // useLeft reversed since it changed after getting a list of matches
-            let result = this.useLeft ? this.funJoin(item, this.match) : this.funJoin(this.match, item);
+            let result = this.usedLeft ? this.funJoin(this.match, item) : this.funJoin(item, this.match) ;
             if (result !== null)
                 return result;
         }
         
-        let item = this.useLeft ? this.left.read() : this.right.read();
+        if (!this.hasResults())
+            this._end();
+        
+        let item = null;
+        // try both streams if the first one has no value
+        for (let i = 0; i < 2; ++i)
+        {
+            item = this.usedLeft ? this.right.read() : this.left.read();
+            this.usedLeft = !this.usedLeft; // try other stream next time
+            
+            // found a result, no need to check the other stream this run
+            if (item !== null)
+                break;
+        }
+        
         if (item === null)
+        {
+            this.readable = false;
             return null;
+        }
         
         let hash = this.funHash(item);
-        let map = this.useLeft ? this.leftMap : this.rightMap;
+        let map = this.usedLeft ? this.leftMap : this.rightMap;
         if (!map.has(hash))
             map.set(hash, []);
         let arr = map.get(hash);
         arr.push(item);
     
         this.match = item;
-        this.matches = (this.useLeft ? this.rightMap : this.leftMap).get(this.funHash(item)) || [];
+        this.matches = (this.usedLeft ? this.rightMap : this.leftMap).get(this.funHash(item)) || [];
         this.matchIdx = 0;
         
-        this.useLeft = !this.useLeft;
-        
-        this.emit('readable');
-        
-        return null;
+        // array is filled again so recursive call can have results
+        return this.read();
     }
 }
 
