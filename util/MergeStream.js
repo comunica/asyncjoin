@@ -15,34 +15,44 @@ class MergeStream extends AsyncIterator
         for (let stream of streams)
         {
             stream.on('readable', () => this.emit('readable'));
-            stream.on('end', () => {if (this.ended) this.emit('end')});
+            stream.on('end', () => this._removeStream(stream));
         }
         
         if (this.streams.length === 0)
             this.close();
+        
+        this.idx = this.streams.length-1;
     }
     
-    get readable() { return this.streams.some (stream => stream.readable); }
-    get closed()   { return this.streams.every(stream => stream.closed);   }
-    get ended()    { return this.streams.every(stream => stream.ended);    }
+    _removeStream (stream)
+    {
+        let idx = this.streams.indexOf(stream);
+        if (idx < 0)
+            return;
+        
+        this.streams.splice(idx, 1);
+        if (this.idx >= this.streams.length)
+            --this.idx;
+        
+        if (this.streams.length === 0)
+            this._end();
+    }
     
     close ()
     {
+        super.close();
         for (let stream of this.streams)
             stream.close();
     }
     
     read ()
     {
-        for (let i = this.streams.length-1; i >= 0; --i)
+        for (let attempts = 0; attempts < this.streams.length; ++attempts)
         {
-            let item = this.streams[i].read();
+            this.idx = (this.idx + 1) % this.streams.length;
+            let item = this.streams[this.idx].read();
             if (item !== null)
                 return item;
-            
-            // clean up array of streams
-            if (this.streams[i].ended)
-                this.streams.splice(i, 1);
         }
         
         return null;
