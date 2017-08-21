@@ -63,7 +63,7 @@ class HashJoin extends AsyncIterator
         while (this.matchIdx < this.matches.length)
         {
             let item = this.matches[this.matchIdx++];
-            let result = this.funJoin(this.match, item);
+            let result = this.funJoin(item, this.match);
             if (result !== null)
                 return result;
         }
