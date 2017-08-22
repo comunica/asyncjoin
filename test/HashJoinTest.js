@@ -2,7 +2,7 @@
 const genericTest = require('./genericTest');
 const HashJoin = require('../join/HashJoin');
 
-genericTest.testStream((left, right, funJoin) =>
+describe('HashJoin', () =>
 {
-    return new HashJoin(left, right, a => 1, funJoin);
-}, 'HashJoin');
+    genericTest.testStream((left, right, funJoin) => new HashJoin(left, right, a => 1, funJoin));
+});

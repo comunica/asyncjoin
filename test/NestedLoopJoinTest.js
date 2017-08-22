@@ -2,7 +2,7 @@
 const genericTest = require('./genericTest');
 const NestedLoopJoin = require('../join/NestedLoopJoin');
 
-genericTest.testStream((left, right, funJoin) =>
+describe('NestedloopJoin', () =>
 {
-    return new NestedLoopJoin(left, right, funJoin);
-}, 'NestedLoopJoin');
+    genericTest.testStream((left, right, funJoin) => new NestedLoopJoin(left, right, funJoin));
+});

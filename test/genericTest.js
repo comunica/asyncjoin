@@ -2,7 +2,6 @@
 const _ = require('lodash');
 const assert = require('assert');
 const AsyncIterator = require('asynciterator');
-const EmptyIterator = AsyncIterator.EmptyIterator;
 const IntegerIterator = AsyncIterator.IntegerIterator;
 
 function checkIntegerStreams (leftOptions, rightOptions, funJoin, streamFunc, done)
@@ -29,17 +28,46 @@ function checkIntegerStreams (leftOptions, rightOptions, funJoin, streamFunc, do
 }
 
 // streamFunc should take a left stream, right stream and join function as input and return a stream object
-function testStream (streamFunc, title)
+function testStream (streamFunc)
 {
-    describe(title, () =>
+    it('merges 2 streams of length 3', done =>
     {
-        it('merges 2 streams of length 3', done =>
-        {
-            let leftOptions = {start: 0, end: 2};
-            let rightOptions = {start: 3, end: 5};
-            let funJoin = (left, right) => { return { left, right } };
-            checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
-        });
+        let leftOptions = {start: 0, end: 2};
+        let rightOptions = {start: 3, end: 5};
+        let funJoin = (left, right) => { return { left, right } };
+        checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
+    });
+    
+    it('merges an empty stream with a stream of length 3', done =>
+    {
+        let leftOptions = {start: 0, end: -1};
+        let rightOptions = {start: 3, end: 5};
+        let funJoin = (left, right) => { return { left, right } };
+        checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
+    });
+    
+    it('merges a stream of length 3 with an empty stream', done =>
+    {
+        let leftOptions = {start: 0, end: 2};
+        let rightOptions = {start: 3, end: 2};
+        let funJoin = (left, right) => { return { left, right } };
+        checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
+    });
+    
+    it('merges 2 empty streams', done =>
+    {
+        let leftOptions = {start: 0, end: -1};
+        let rightOptions = {start: 3, end: 2};
+        let funJoin = (left, right) => { return { left, right } };
+        checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
+    });
+    
+    it('supports join functions returning null', done =>
+    {
+        let leftOptions = {start: 0, end: 2};
+        let rightOptions = {start: 3, end: 5};
+        let funJoin = (left, right) => { return ((left % 2) === (right % 2)) ? { left, right } : null };
+        checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
     });
 }
 
