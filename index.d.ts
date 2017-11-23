@@ -33,3 +33,11 @@ export class SymmetricHashJoin<S, H, T> extends AsyncIterator<T>
     close(): void;
     read(): T;
 }
+
+export class MergeIterator<T> extends AsyncIterator<T>
+{
+    constructor(streams: T[]);
+    protected _removeStream(stream: T): void;
+    close(): void;
+    read(): T;
+}

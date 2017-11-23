@@ -1,7 +1,8 @@
 
 let AsyncIterator = require('asynciterator');
 
-class MergeStream extends AsyncIterator
+// merges the contents of multiple streams
+class MergeIterator extends AsyncIterator
 {
     constructor (streams)
     {
@@ -59,4 +60,4 @@ class MergeStream extends AsyncIterator
     }
 }
 
-module.exports = MergeStream;
+module.exports = MergeIterator;
