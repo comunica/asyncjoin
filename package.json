@@ -26,7 +26,7 @@
     "index.js",
     "index.d.ts",
     "join/**/*.js",
-    "util/**/*.js",
+    "util/**/*.js"
   ],
   "main": "index.js"
 }
