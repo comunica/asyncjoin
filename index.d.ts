@@ -5,8 +5,7 @@ export class DynamicNestedLoopJoin<L, R, T> extends MultiTransformIterator<L, T>
 {
     constructor(left: AsyncIterator<L>, funRight: (left: L) => AsyncIterator<R>, funJoin: (left: L, right: R) => T);
 
-    // problem due to async typings
-    // protected _createTransformer(leftItem: L): SimpleTransformIterator<L, T>;
+    _createTransformer(leftItem: L): SimpleTransformIterator<L, T>;
 }
 
 export class HashJoin<S, H, T> extends AsyncIterator<T>
@@ -22,8 +21,7 @@ export class NestedLoopJoin<L, R, T> extends MultiTransformIterator<L, T>
     constructor(left: AsyncIterator<L>, right: AsyncIterator<R>, funJoin: (left: L, right: R) => T);
     close(): void;
 
-    // problem due to async typings
-    // protected _createTransformer(leftItem: L): SimpleTransformIterator<L, T>;
+    _createTransformer(leftItem: L): SimpleTransformIterator<L, T>;
 }
 
 export class SymmetricHashJoin<S, H, T> extends AsyncIterator<T>

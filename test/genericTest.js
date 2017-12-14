@@ -37,6 +37,14 @@ function testStream (streamFunc)
         let funJoin = (left, right) => { return { left, right } };
         checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
     });
+
+    it('merges 2 streams of length 100', done =>
+    {
+        let leftOptions = {start: 0, end: 99};
+        let rightOptions = {start: 3, end: 102};
+        let funJoin = (left, right) => { return left === right ? { left, right } : null };
+        checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
+    });
     
     it('merges an empty stream with a stream of length 3', done =>
     {
