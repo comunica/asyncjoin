@@ -8,7 +8,7 @@
     "url": "https://github.com/joachimvh/asyncjoin.js"
   },
   "dependencies": {
-    "asynciterator": "^1.1.0"
+    "asynciterator": "^2.0.0"
   },
   "devDependencies": {
     "@types/asynciterator": "^1.1.1",
