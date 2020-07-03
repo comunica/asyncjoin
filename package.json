@@ -8,10 +8,9 @@
     "url": "https://github.com/joachimvh/asyncjoin.js"
   },
   "dependencies": {
-    "asynciterator": "^2.0.0"
+    "asynciterator": "^v3.0.0-beta.5"
   },
   "devDependencies": {
-    "@types/asynciterator": "^1.1.1",
     "lodash": "^4.17.10",
     "mocha": "^5.2.0",
     "pre-commit": "^1.2.2"

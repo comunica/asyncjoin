@@ -1,12 +1,12 @@
 
-let AsyncIterator = require('asynciterator');
+let AsyncIterator = require('asynciterator').AsyncIterator;
 
 // https://en.wikipedia.org/wiki/Hash_join
 class HashJoin extends AsyncIterator
 {
     constructor (left, right, funHash, funJoin)
     {
-        super(right);
+        super();
         
         this.left = left;
         this.right = right;
@@ -21,10 +21,10 @@ class HashJoin extends AsyncIterator
         
         
         this.readable = false;
-        
+
         this.left.on('end', allowJoining.bind(this));
         this.left.on('data', addItem.bind(this));
-        
+
         function addItem (item)
         {
             let hash = this.funHash(item);
@@ -67,7 +67,7 @@ class HashJoin extends AsyncIterator
             if (result !== null)
                 return result;
         }
-    
+
         if (!this.hasResults())
             this._end();
     
