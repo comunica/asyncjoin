@@ -1,5 +1,5 @@
 
-let AsyncIterator = require('asynciterator');
+let AsyncIterator = require('asynciterator').AsyncIterator;
 
 // https://en.wikipedia.org/wiki/Symmetric_Hash_Join
 class SymmetricHashJoin extends AsyncIterator

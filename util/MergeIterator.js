@@ -1,5 +1,5 @@
 
-let AsyncIterator = require('asynciterator');
+let AsyncIterator = require('asynciterator').AsyncIterator;
 
 // merges the contents of multiple streams
 class MergeIterator extends AsyncIterator
