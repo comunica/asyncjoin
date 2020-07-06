@@ -6,9 +6,9 @@ let SimpleTransformIterator = AsyncIterator.SimpleTransformIterator;
 // https://en.wikipedia.org/wiki/Nested_loop_join
 class NestedLoopJoin extends MultiTransformIterator
 {
-    constructor (left, right, funJoin)
+    constructor (left, right, funJoin, options)
     {
-        super(left);
+        super(left, options);
         
         this.right = right;
         this.funJoin = funJoin; // function that joins 2 elements or returns null if join is not possible
