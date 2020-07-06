@@ -23,9 +23,16 @@ class SymmetricHashJoin extends AsyncIterator
         this.match    = null;
         this.matches  = [];
         this.matchIdx = 0;
-        
-        this.left.on ('readable', () => this.readable = true);
-        this.right.on('readable', () => this.readable = true);
+
+        if (this.left.readable || this.right.readable)
+        {
+            this.readable = true;
+        }
+        else
+        {
+            this.left.on('readable', () => this.readable = true);
+            this.right.on('readable', () => this.readable = true);
+        }
         
         // this needs to be here since it's possible the left/right streams only get ended after there are no more results left
         this.left.on ('end', () => { if (!this.hasResults()) this._end(); });

@@ -7,7 +7,8 @@ class HashJoin extends AsyncIterator
     constructor (left, right, funHash, funJoin)
     {
         super();
-        
+
+        this.addedDataListener = false;
         this.left = left;
         this.right = right;
         this.funHash = funHash;
@@ -23,16 +24,7 @@ class HashJoin extends AsyncIterator
         this.readable = false;
 
         this.left.on('end', allowJoining.bind(this));
-        this.left.on('data', addItem.bind(this));
 
-        function addItem (item)
-        {
-            let hash = this.funHash(item);
-            if (!this.leftMap.has(hash))
-                this.leftMap.set(hash, []);
-            let arr = this.leftMap.get(hash);
-            arr.push(item);
-        }
         function allowJoining ()
         {
             if (this.leftMap.size <= 0)
@@ -41,6 +33,15 @@ class HashJoin extends AsyncIterator
             this.right.on('readable', () => this.readable = true);
             this.right.on('end', () => { if (!this.hasResults()) this._end(); });
         }
+
+        this.on('newListener', (eventName) =>
+        {
+            if (eventName === 'data' && !this.addedDataListener)
+            {
+                this.addedDataListener = true;
+                this._addDataListener();
+            }
+        })
     }
     
     hasResults ()
@@ -57,6 +58,12 @@ class HashJoin extends AsyncIterator
     
     read ()
     {
+        if (!this.addedDataListener)
+        {
+            this.addedDataListener = true;
+            this._addDataListener();
+        }
+
         if (this.ended || !this.readable)
             return null;
     
@@ -85,6 +92,20 @@ class HashJoin extends AsyncIterator
     
         // array is filled again so recursive call can have results
         return this.read();
+    }
+
+    _addDataListener()
+    {
+        this.left.on('data', addItem.bind(this));
+
+        function addItem(item)
+        {
+            let hash = this.funHash(item);
+            if (!this.leftMap.has(hash))
+                this.leftMap.set(hash, []);
+            let arr = this.leftMap.get(hash);
+            arr.push(item);
+        }
     }
 }
 
