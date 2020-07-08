@@ -1,6 +1,6 @@
 {
   "name": "asyncjoin",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Join library for asynciterator",
   "license": "MIT",
   "repository": {
