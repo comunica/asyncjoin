@@ -39,7 +39,11 @@ class SymmetricHashJoin extends AsyncIterator
     
     hasResults()
     {
-        return !this.left.ended  || !this.right.ended || this.matchIdx < this.matches.length;
+        // The "!!this.match" condition was added as a workaround to race
+        // conditions and/or duplicate "end" events that may lead to premature
+        // cleanups of the "this.matches" array.
+        // See https://github.com/joachimvh/asyncjoin/issues/7
+        return !this.left.ended  || !this.right.ended || (!!this.matches && this.matchIdx < this.matches.length);
     }
     
     _cleanup ()
