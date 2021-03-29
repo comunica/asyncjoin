@@ -1,8 +1,7 @@
 
 const _ = require('lodash');
 const assert = require('assert');
-const AsyncIterator = require('asynciterator');
-const IntegerIterator = AsyncIterator.IntegerIterator;
+const { IntegerIterator, EmptyIterator } = require('asynciterator');
 
 function checkIntegerStreams (leftOptions, rightOptions, funJoin, streamFunc, done)
 {
@@ -45,7 +44,7 @@ function testStream (streamFunc)
         let funJoin = (left, right) => { return left === right ? { left, right } : null };
         checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
     });
-    
+
     it('merges an empty stream with a stream of length 3', done =>
     {
         let leftOptions = {start: 0, end: -1};
@@ -53,7 +52,7 @@ function testStream (streamFunc)
         let funJoin = (left, right) => { return { left, right } };
         checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
     });
-    
+
     it('merges a stream of length 3 with an empty stream', done =>
     {
         let leftOptions = {start: 0, end: 2};
@@ -61,7 +60,7 @@ function testStream (streamFunc)
         let funJoin = (left, right) => { return { left, right } };
         checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
     });
-    
+
     it('merges 2 empty streams', done =>
     {
         let leftOptions = {start: 0, end: -1};
@@ -69,13 +68,19 @@ function testStream (streamFunc)
         let funJoin = (left, right) => { return { left, right } };
         checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
     });
-    
+
     it('supports join functions returning null', done =>
     {
         let leftOptions = {start: 0, end: 2};
         let rightOptions = {start: 3, end: 5};
         let funJoin = (left, right) => { return ((left % 2) === (right % 2)) ? { left, right } : null };
         checkIntegerStreams(leftOptions, rightOptions, funJoin, streamFunc, done)
+    });
+
+    it('can handle streams that are already done', () =>
+    {
+        let funJoin = (left, right) => { return { left, right } };
+        let stream = streamFunc(new EmptyIterator(), new EmptyIterator(), funJoin);
     });
 }
 
