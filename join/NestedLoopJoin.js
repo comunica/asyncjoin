@@ -21,11 +21,11 @@ class NestedLoopJoin extends MultiTransformIterator
 
     _createTransformer (leftItem)
     {
-        return new SimpleTransformIterator(this.right.clone(), { transform: (rightItem, done) =>
+        return new SimpleTransformIterator(this.right.clone(), { transform: (rightItem, done, push) =>
         {
             let result = this.funJoin(leftItem, rightItem);
             if (result !== null)
-                this._push(result);
+                push(result);
             done();
         }});
     }
