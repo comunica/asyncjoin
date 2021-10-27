@@ -1,7 +1,7 @@
 
 const _ = require('lodash');
 const assert = require('assert');
-const { IntegerIterator, EmptyIterator } = require('asynciterator');
+const { IntegerIterator, EmptyIterator, ArrayIterator } = require('asynciterator');
 
 function checkIntegerStreams (leftOptions, rightOptions, funJoin, streamFunc, done)
 {
@@ -24,6 +24,14 @@ function checkIntegerStreams (leftOptions, rightOptions, funJoin, streamFunc, do
         assert(expected.every(entry => entry.matched), 'not all expected values were matched');
         done();
     })
+}
+
+function newErrorStream() {
+    const iterator = new ArrayIterator([], { autoStart: false });
+    iterator.read = () => {
+        iterator.destroy(new Error('Error in iterator'));
+    };
+    return iterator;
 }
 
 // streamFunc should take a left stream, right stream and join function as input and return a stream object
@@ -81,6 +89,48 @@ function testStream (streamFunc)
     {
         let funJoin = (left, right) => { return { left, right } };
         let stream = streamFunc(new EmptyIterator(), new EmptyIterator(), funJoin);
+    });
+
+    it('propagates errors in the left stream', done =>
+    {
+        let funJoin = (left, right) => { return { left, right } };
+        let stream = streamFunc(newErrorStream(), new ArrayIterator([1]), funJoin);
+        let doneCalled = false;
+        stream.on('error', () => {
+            if (!doneCalled) {
+                done();
+            }
+            doneCalled = true;
+        });
+        stream.on('data', () => {
+            // Do nothing
+        });
+        stream.on('end', () => {
+            if (!doneCalled) {
+                done(new Error('Stream ended before end event emitted'));
+            }
+        });
+    });
+
+    it('propagates errors in the right stream', done =>
+    {
+        let funJoin = (left, right) => { return { left, right } };
+        let stream = streamFunc(new IntegerIterator({start: 3, end: 100}), newErrorStream(), funJoin);
+        let doneCalled = false;
+        stream.on('error', () => {
+            if (!doneCalled) {
+                done();
+            }
+            doneCalled = true;
+        });
+        stream.on('data', () => {
+            // Do nothing
+        });
+        stream.on('end', () => {
+            if (!doneCalled) {
+                done(new Error('Stream ended before end event emitted'));
+            }
+        });
     });
 }
 

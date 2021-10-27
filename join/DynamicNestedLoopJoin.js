@@ -6,9 +6,9 @@ let SimpleTransformIterator = AsyncIterator.SimpleTransformIterator;
 // Nested Loop Join, but the values of the inner loop are determined by each value of the outer loop, possibly reducing the number of necessary checks
 class DynamicNestedLoopJoin extends MultiTransformIterator
 {
-    constructor (left, funRight, funJoin)
+    constructor (left, funRight, funJoin, options)
     {
-        super(left);
+        super(left, options);
 
         this.funRight = funRight;
         this.funJoin = funJoin;
