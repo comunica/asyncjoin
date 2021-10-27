@@ -13,14 +13,16 @@ class HashJoin extends AsyncIterator
         this.right = right;
         this.funHash = funHash;
         this.funJoin = funJoin;
-        
+
         this.leftMap = new Map();
-    
+
         this.match    = null;
         this.matches  = [];
         this.matchIdx = 0;
-        
-        
+
+        this.left.on('error', (error) => this.destroy(error));
+        this.right.on('error', (error) => this.destroy(error));
+
         this.readable = false;
 
         this.left.on('end', allowJoining.bind(this));
@@ -43,19 +45,19 @@ class HashJoin extends AsyncIterator
             }
         })
     }
-    
+
     hasResults ()
     {
         return !this.right.ended || this.matchIdx < this.matches.length;
     }
-    
+
     close ()
     {
         super.close();
         this.left.close();
         this.right.close();
     }
-    
+
     read ()
     {
         if (!this.addedDataListener)
@@ -66,7 +68,7 @@ class HashJoin extends AsyncIterator
 
         if (this.ended || !this.readable)
             return null;
-    
+
         while (this.matchIdx < this.matches.length)
         {
             let item = this.matches[this.matchIdx++];
@@ -77,19 +79,19 @@ class HashJoin extends AsyncIterator
 
         if (!this.hasResults())
             this._end();
-    
+
         this.match = this.right.read();
-    
+
         if (this.match === null)
         {
             this.readable = false;
             return null;
         }
-    
+
         let hash = this.funHash(this.match);
         this.matches = this.leftMap.get(hash) || [];
         this.matchIdx = 0;
-    
+
         // array is filled again so recursive call can have results
         return this.read();
     }
