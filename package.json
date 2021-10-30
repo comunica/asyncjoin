@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/joachimvh/asyncjoin.js"
+    "url": "https://github.com/comunica/asyncjoin"
   },
   "dependencies": {
     "asynciterator": "^3.2.0"
