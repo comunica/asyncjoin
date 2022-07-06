@@ -60,13 +60,13 @@ class HashJoin extends AsyncIterator
 
     read ()
     {
-        while(true) {
-            if (!this.addedDataListener)
-            {
-                this.addedDataListener = true;
-                this._addDataListener();
-            }
+        if (!this.addedDataListener)
+        {
+            this.addedDataListener = true;
+            this._addDataListener();
+        }
 
+        while(true) {
             if (this.ended || !this.readable)
                 return null;
 
