@@ -72,10 +72,10 @@ arrify@^1.0.1:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==
 
-asynciterator@^3.2.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/asynciterator/-/asynciterator-3.5.0.tgz#3932d27af1e6e82d986c02ff05d983d5e0683b55"
-  integrity sha512-CbnvkU50ZXNnVSPi/VUvzzjIJ128WNixWVBMY4j5yZwibSaIdGRirPplgtpJiOhmQyagFlPr1T6f5GmCiOg4dg==
+asynciterator@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/asynciterator/-/asynciterator-3.6.0.tgz#84c3d75923cbbf65176d7d4070dd5e151927ff01"
+  integrity sha512-BhObehP7alvCB2jNFBeFwGmJjJuVWoKP/UCA0Uowd4BJH407t5LUqw+M/ruR+v5BS8UofHZzXdviPKRhuo6lpQ==
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -407,9 +407,9 @@ is-arrayish@^0.2.1:
   integrity sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==
 
 is-core-module@^2.5.0, is-core-module@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.9.0.tgz#e1c34429cd51c6dd9e09e0799e396e27b19a9c69"
-  integrity sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A==
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.10.0.tgz#9012ede0a91c69587e647514e1d5277019e728ed"
+  integrity sha512-Erxj2n/LDAZ7H8WNJXd9tw38GYM3dv8rk8Zcs+jJuxYTW7sozH+SS8NtrSjVL1/vpLvWi1hxy96IzjJ3EHTJJg==
   dependencies:
     has "^1.0.3"
 
