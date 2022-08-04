@@ -8,13 +8,13 @@
     "url": "https://github.com/comunica/asyncjoin"
   },
   "dependencies": {
-    "asynciterator": "^3.2.0"
+    "asynciterator": "^3.6.0"
   },
   "devDependencies": {
     "lodash": "^4.17.21",
+    "manual-git-changelog": "^1.0.0",
     "mocha": "^5.2.0",
-    "pre-commit": "^1.2.2",
-    "manual-git-changelog": "^1.0.0"
+    "pre-commit": "^1.2.2"
   },
   "scripts": {
     "test": "mocha test",
