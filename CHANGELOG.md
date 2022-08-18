@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v1.1.1"></a>
+## [v1.1.1](https://github.com/comunica/asyncjoin/compare/v1.1.0...v1.1.1) - 2022-08-18
+
+### Fixed
+* [Fix destroy calls not being propagated](https://github.com/comunica/asyncjoin/commit/acfa1be3cca724f98cd9411b71e72420ca950cfe)
+
 <a name="v1.1.0"></a>
 ## [v1.1.0](https://github.com/comunica/asyncjoin/compare/v1.0.6...v1.1.0) - 2022-08-04
 
