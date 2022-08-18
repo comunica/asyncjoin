@@ -13,10 +13,10 @@ class NestedLoopJoin extends MultiTransformIterator
         this.on('end', () => this.right.close());
     }
 
-    close ()
+    _end ()
     {
-        super.close();
-        scheduleTask(() => this.right.close());
+        super._end();
+        scheduleTask(() => this.right.destroy());
     }
 
     _createTransformer (leftItem)

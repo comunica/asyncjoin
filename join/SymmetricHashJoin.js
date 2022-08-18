@@ -57,11 +57,11 @@ class SymmetricHashJoin extends AsyncIterator
         this.matches = null;
     }
 
-    close ()
+    _end ()
     {
-        super.close();
-        this.left.close();
-        this.right.close();
+        super._end();
+        this.left.destroy();
+        this.right.destroy();
     }
 
     read ()
@@ -92,7 +92,7 @@ class SymmetricHashJoin extends AsyncIterator
                 break;
         }
 
-        if (item === null)
+        if (this.done || item === null)
         {
             this.readable = false;
             return null;

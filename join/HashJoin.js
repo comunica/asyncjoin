@@ -51,11 +51,11 @@ class HashJoin extends AsyncIterator
         return !this.right.ended || this.matchIdx < this.matches.length;
     }
 
-    close ()
+    _end ()
     {
-        super.close();
-        this.left.close();
-        this.right.close();
+        super._end();
+        this.left.destroy();
+        this.right.destroy();
     }
 
     read ()
