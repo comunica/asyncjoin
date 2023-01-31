@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v1.1.2"></a>
+## [v1.1.2](https://github.com/comunica/asyncjoin/compare/v1.1.0...v1.1.2) - 2023-01-31
+
+### Fixed
+* [Replace tail recursion with while loop in SymmetricHashJoin](https://github.com/comunica/asyncjoin/commit/892865ddeafaa0c2e18ad80c96ef258d31d509c3)
+
 <a name="v1.1.1"></a>
 ## [v1.1.1](https://github.com/comunica/asyncjoin/compare/v1.1.0...v1.1.1) - 2022-08-18
 
