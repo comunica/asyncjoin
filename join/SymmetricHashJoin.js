@@ -66,51 +66,50 @@ class SymmetricHashJoin extends AsyncIterator
 
     read ()
     {
-        if (this.ended)
-            return null;
+        while(true){
+            if (this.ended)
+                return null;
 
-        while (this.matchIdx < this.matches.length)
-        {
-            let item = this.matches[this.matchIdx++];
-            let result = this.usedLeft ? this.funJoin(this.match, item) : this.funJoin(item, this.match);
-            if (result !== null)
-                return result;
+            while (this.matchIdx < this.matches.length)
+            {
+                let item = this.matches[this.matchIdx++];
+                let result = this.usedLeft ? this.funJoin(this.match, item) : this.funJoin(item, this.match);
+                if (result !== null)
+                    return result;
+            }
+
+            if (!this.hasResults())
+                this._end();
+
+            let item = null;
+            // try both streams if the first one has no value
+            for (let i = 0; i < 2; ++i)
+            {
+                item = this.usedLeft ? this.right.read() : this.left.read();
+                this.usedLeft = !this.usedLeft; // try other stream next time
+
+                // found a result, no need to check the other stream this run
+                if (item !== null)
+                    break;
+            }
+
+            if (this.done || item === null)
+            {
+                this.readable = false;
+                return null;
+            }
+
+            let hash = this.funHash(item);
+            let map = this.usedLeft ? this.leftMap : this.rightMap;
+            if (!map.has(hash))
+                map.set(hash, []);
+            let arr = map.get(hash);
+            arr.push(item);
+
+            this.match = item;
+            this.matches = (this.usedLeft ? this.rightMap : this.leftMap).get(hash) || [];
+            this.matchIdx = 0;
         }
-
-        if (!this.hasResults())
-            this._end();
-
-        let item = null;
-        // try both streams if the first one has no value
-        for (let i = 0; i < 2; ++i)
-        {
-            item = this.usedLeft ? this.right.read() : this.left.read();
-            this.usedLeft = !this.usedLeft; // try other stream next time
-
-            // found a result, no need to check the other stream this run
-            if (item !== null)
-                break;
-        }
-
-        if (this.done || item === null)
-        {
-            this.readable = false;
-            return null;
-        }
-
-        let hash = this.funHash(item);
-        let map = this.usedLeft ? this.leftMap : this.rightMap;
-        if (!map.has(hash))
-            map.set(hash, []);
-        let arr = map.get(hash);
-        arr.push(item);
-
-        this.match = item;
-        this.matches = (this.usedLeft ? this.rightMap : this.leftMap).get(hash) || [];
-        this.matchIdx = 0;
-
-        // array is filled again so recursive call can have results
-        return this.read();
     }
 }
 
