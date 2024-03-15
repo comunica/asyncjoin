@@ -72,10 +72,10 @@ arrify@^1.0.1:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==
 
-asynciterator@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/asynciterator/-/asynciterator-3.6.0.tgz#84c3d75923cbbf65176d7d4070dd5e151927ff01"
-  integrity sha512-BhObehP7alvCB2jNFBeFwGmJjJuVWoKP/UCA0Uowd4BJH407t5LUqw+M/ruR+v5BS8UofHZzXdviPKRhuo6lpQ==
+asynciterator@^3.9.0:
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/asynciterator/-/asynciterator-3.9.0.tgz#6e9a69623c4cec07e4cd85130416d52899f4e93f"
+  integrity sha512-bwLLTAnoE6Ap6XdjK/j8vDk2Vi9p3ojk0PFwM0SwktAG1k8pfRJF9ng+mmkaRFKdZCQQlOxcWnvOmX2NQ1HV0g==
 
 balanced-match@^1.0.0:
   version "1.0.2"

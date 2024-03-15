@@ -8,7 +8,7 @@
     "url": "https://github.com/comunica/asyncjoin"
   },
   "dependencies": {
-    "asynciterator": "^3.6.0"
+    "asynciterator": "^3.9.0"
   },
   "devDependencies": {
     "lodash": "^4.17.21",
