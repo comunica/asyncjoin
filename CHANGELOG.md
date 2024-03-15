@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v1.2.0"></a>
+## [v1.2.0](https://github.com/comunica/asyncjoin/compare/v1.1.2...v1.2.0) - 2024-03-15
+
+### Changed
+* [Update to asynciterator 3.9.0](https://github.com/comunica/asyncjoin/commit/cfb8831ed17576bd086746a38a62a5083b0d912c)
+
 <a name="v1.1.2"></a>
 ## [v1.1.2](https://github.com/comunica/asyncjoin/compare/v1.1.0...v1.1.2) - 2023-01-31
 
