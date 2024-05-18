@@ -100,11 +100,18 @@ class SymmetricHashJoin extends AsyncIterator
             }
 
             let hash = this.funHash(item);
-            let map = this.usedLeft ? this.leftMap : this.rightMap;
-            if (!map.has(hash))
-                map.set(hash, []);
-            let arr = map.get(hash);
-            arr.push(item);
+
+            if (this.usedLeft && this.right.done) {
+                this.leftMap = null;
+            } else if (this.left.done) {
+                this.rightMap = null;
+            } else {
+                let map = this.usedLeft ? this.leftMap : this.rightMap;
+                if (!map.has(hash))
+                    map.set(hash, []);
+                let arr = map.get(hash);
+                arr.push(item);
+            }
 
             this.match = item;
             this.matches = (this.usedLeft ? this.rightMap : this.leftMap).get(hash) || [];
