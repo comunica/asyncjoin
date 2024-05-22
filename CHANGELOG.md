@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v1.2.1"></a>
+## [v1.2.1](https://github.com/comunica/asyncjoin/compare/v1.2.0...v1.2.1) - 2024-05-22
+
+### Fixed
+* [Reduce memory usage of symmetric hash join](https://github.com/comunica/asyncjoin/commit/131c8ad2bdf8550a09a6f887408ab502c11ff982)
+
 <a name="v1.2.0"></a>
 ## [v1.2.0](https://github.com/comunica/asyncjoin/compare/v1.1.2...v1.2.0) - 2024-03-15
 
