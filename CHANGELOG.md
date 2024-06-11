@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v1.2.2"></a>
+## [v1.2.2](https://github.com/comunica/asyncjoin/compare/v1.2.1...v1.2.2) - 2024-06-11
+
+### Fixed
+* [Fix HashJoin not always being marked as readable](https://github.com/comunica/asyncjoin/commit/114b96e3dd0fc1415905ad8b8fe4e91ffd1d6e2f)
+
 <a name="v1.2.1"></a>
 ## [v1.2.1](https://github.com/comunica/asyncjoin/compare/v1.2.0...v1.2.1) - 2024-05-22
 
