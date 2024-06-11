@@ -23,7 +23,10 @@ class HashJoin extends AsyncIterator
         this.left.on('error', (error) => this.destroy(error));
         this.right.on('error', (error) => this.destroy(error));
 
-        this.readable = false;
+        if (this.left.readable || this.right.readable)
+        {
+            this.readable = true;
+        }
 
         this.left.on('end', allowJoining.bind(this));
 
