@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v1.2.3"></a>
+## [v1.2.3](https://github.com/comunica/asyncjoin/compare/v1.2.2...v1.2.3) - 2024-06-14
+
+### Fixed
+* [Fix HashJoin hanging for non-autoStarted iterators](https://github.com/comunica/asyncjoin/commit/8ec9c78b76fe43465b7bde6341e8d941a409e14e)
+
 <a name="v1.2.2"></a>
 ## [v1.2.2](https://github.com/comunica/asyncjoin/compare/v1.2.1...v1.2.2) - 2024-06-11
 
