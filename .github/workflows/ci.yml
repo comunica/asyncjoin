@@ -7,10 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version:
-          - 12.x
-          - 14.x
-          - 16.x
+        node-version: [18, 20, 22]
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
@@ -26,5 +23,7 @@ jobs:
           key: ${{ runner.os }}-test-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install
+      - name: Build the package
+        run: yarn run build
       - name: Run tests
         run: yarn run test

@@ -1,28 +1,19 @@
-
-let AsyncIterator = require('asynciterator').AsyncIterator;
+import { AsyncIterator } from 'asynciterator';
 
 // https://en.wikipedia.org/wiki/Symmetric_Hash_Join
-class SymmetricHashJoin extends AsyncIterator
-{
-    constructor (left, right, funHash, funJoin)
+export class SymmetricHashJoin<S, H, T> extends AsyncIterator<T> {
+    private usedLeft = false;
+    private leftMap: Map<H, S[]> | null = new Map<H, S[]>();
+    private rightMap: Map<H, S[]> | null = new Map<H, S[]>();
+    private matchIdx = 0;
+    private match: S | null = null;
+    private matches: S[] | null = [];
+
+    constructor (private left: AsyncIterator<S>, private right: AsyncIterator<S>, private funHash: (entry: S) => H, private funJoin: (left: S, right: S) => T)
     {
         super();
 
-        this.left  = left;
-        this.right = right;
-
-        this.funHash = funHash;
-        this.funJoin = funJoin;
-
-        this.usedLeft = false;
-        this.leftMap  = new Map();
-        this.rightMap = new Map();
-
         this.on('end', () => this._cleanup() );
-
-        this.match    = null;
-        this.matches  = [];
-        this.matchIdx = 0;
 
         if (this.left.readable || this.right.readable)
         {
@@ -70,10 +61,10 @@ class SymmetricHashJoin extends AsyncIterator
             if (this.ended)
                 return null;
 
-            while (this.matchIdx < this.matches.length)
+            while (this.matchIdx < this.matches!.length)
             {
-                let item = this.matches[this.matchIdx++];
-                let result = this.usedLeft ? this.funJoin(this.match, item) : this.funJoin(item, this.match);
+                let item = this.matches![this.matchIdx++];
+                let result = this.usedLeft ? this.funJoin(this.match!, item) : this.funJoin(item, this.match!);
                 if (result !== null)
                     return result;
             }
@@ -81,7 +72,7 @@ class SymmetricHashJoin extends AsyncIterator
             if (!this.hasResults())
                 this._end();
 
-            let item = null;
+            let item: S | null = null;
             // try both streams if the first one has no value
             for (let i = 0; i < 2; ++i)
             {
@@ -106,18 +97,16 @@ class SymmetricHashJoin extends AsyncIterator
             } else if (this.left.done) {
                 this.rightMap = null;
             } else {
-                let map = this.usedLeft ? this.leftMap : this.rightMap;
+                let map = (this.usedLeft ? this.leftMap : this.rightMap)!;
                 if (!map.has(hash))
                     map.set(hash, []);
-                let arr = map.get(hash);
+                let arr = map.get(hash)!;
                 arr.push(item);
             }
 
             this.match = item;
-            this.matches = (this.usedLeft ? this.rightMap : this.leftMap).get(hash) || [];
+            this.matches = (this.usedLeft ? this.rightMap : this.leftMap)!.get(hash) || [];
             this.matchIdx = 0;
         }
     }
 }
-
-module.exports = SymmetricHashJoin;

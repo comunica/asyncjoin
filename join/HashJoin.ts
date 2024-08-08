@@ -1,38 +1,35 @@
-
-let AsyncIterator = require('asynciterator').AsyncIterator;
+import { AsyncIterator } from 'asynciterator';
 
 // https://en.wikipedia.org/wiki/Hash_join
-class HashJoin extends AsyncIterator
-{
-    constructor (left, right, funHash, funJoin)
-    {
+export class HashJoin<S, H, T> extends AsyncIterator<T> {
+    private addedDataListener = false;
+    private leftMap = new Map<H, S[]>();
+    private matchIdx = 0;
+    private match: S | null = null;
+    private matches: S[];
+
+    constructor (
+        private left: AsyncIterator<S>,
+        private right: AsyncIterator<S>, 
+        private funHash: (entry: S) => H, 
+        private funJoin: (left: S, right: S) => T
+    ) {
         super();
 
-        this.addedDataListener = false;
-        this.left = left;
-        this.right = right;
-        this.funHash = funHash;
-        this.funJoin = funJoin;
-
-        this.leftMap = new Map();
-
-        this.match    = null;
         this.matches  = [];
-        this.matchIdx = 0;
 
         this.left.on('error', (error) => this.destroy(error));
         this.right.on('error', (error) => this.destroy(error));
 
         this.readable = false;
 
-        this.left.on('end', allowJoining.bind(this));
-
-        function allowJoining ()
-        {
+        const allowJoining = () => {
             this.readable = true;
             this.right.on('readable', () => this.readable = true);
             this.right.on('end', () => { if (!this.hasResults()) this._end(); });
         }
+
+        this.left.on('end', allowJoining);
 
         this.on('newListener', (eventName) =>
         {
@@ -69,7 +66,7 @@ class HashJoin extends AsyncIterator
             while (this.matchIdx < this.matches.length)
             {
                 let item = this.matches[this.matchIdx++];
-                let result = this.funJoin(item, this.match);
+                let result = this.funJoin(item, this.match!);
                 if (result !== null)
                     return result;
             }
@@ -101,17 +98,16 @@ class HashJoin extends AsyncIterator
 
     _addDataListener()
     {
-        this.left.on('data', addItem.bind(this));
-
-        function addItem(item)
+        const addItem = (item: S) =>
         {
             let hash = this.funHash(item);
             if (!this.leftMap.has(hash))
                 this.leftMap.set(hash, []);
             let arr = this.leftMap.get(hash);
-            arr.push(item);
+            arr!.push(item);
         }
+        
+        this.left.on('data', addItem);
     }
 }
 
-module.exports = HashJoin;

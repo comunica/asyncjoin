@@ -1,6 +1,6 @@
 
 const genericTest = require('./genericTest');
-const SymmetricHashJoin = require('../join/SymmetricHashJoin');
+const { SymmetricHashJoin } = require('../dist/SymmetricHashJoin');
 
 describe('SymmetricHashJoin', () =>
 {

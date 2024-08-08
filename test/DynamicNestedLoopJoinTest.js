@@ -1,7 +1,7 @@
 
 const genericTest = require('./genericTest');
-const DynamicNestedLoopJoin = require('../join/DynamicNestedLoopJoin');
+const { dynamicNestedLoopJoin } = require('../dist/DynamicNestedLoopJoin');
 
 describe('DynamicNestedLoopJoin', () => {
-    genericTest.testStream((left, right, funJoin) => new DynamicNestedLoopJoin(left, () => right.clone(), funJoin));
+    genericTest.testStream((left, right, funJoin) => dynamicNestedLoopJoin(left, () => right.clone(), funJoin));
 });
