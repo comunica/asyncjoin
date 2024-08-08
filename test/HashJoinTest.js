@@ -1,6 +1,6 @@
 
 const genericTest = require('./genericTest');
-const HashJoin = require('../join/HashJoin');
+const { HashJoin } = require('../dist/HashJoin');
 
 describe('HashJoin', () =>
 {
