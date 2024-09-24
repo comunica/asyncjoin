@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v1.2.4"></a>
+## [v1.2.4](https://github.com/comunica/asyncjoin/compare/v1.2.3...v1.2.4) - 2024-09-24
+
+### Changed
+* [Remove unneeded Map.has check in hash joins](https://github.com/comunica/asyncjoin/commit/11456bd33ea76d0145370c4ee2b2d1a3b072cd84)
+
 <a name="v1.2.3"></a>
 ## [v1.2.3](https://github.com/comunica/asyncjoin/compare/v1.2.2...v1.2.3) - 2024-06-14
 
