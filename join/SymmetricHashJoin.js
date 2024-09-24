@@ -110,6 +110,10 @@ class SymmetricHashJoin extends AsyncIterator
                 if (!map.has(hash))
                     map.set(hash, []);
                 let arr = map.get(hash);
+                if (!arr) {
+                    arr = [];
+                    map.set(hash, arr);
+                }
                 arr.push(item);
             }
 

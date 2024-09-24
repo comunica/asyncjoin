@@ -106,9 +106,11 @@ class HashJoin extends AsyncIterator
         function addItem(item)
         {
             let hash = this.funHash(item);
-            if (!this.leftMap.has(hash))
-                this.leftMap.set(hash, []);
             let arr = this.leftMap.get(hash);
+            if (!arr) {
+                arr = [];
+                this.leftMap.set(hash, arr);
+            }
             arr.push(item);
         }
     }
