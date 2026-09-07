@@ -15,6 +15,7 @@ class HashJoin extends AsyncIterator
         this.funJoin = funJoin;
 
         this.leftMap = new Map();
+        this.rightUnused = false;
 
         this.match    = null;
         this.matches  = [];
@@ -30,6 +31,17 @@ class HashJoin extends AsyncIterator
         function allowJoining ()
         {
             this.readable = true;
+
+            // An inner join over an empty hash table produces nothing, so the right stream never has to be read.
+            // Reading it is cheap for an in-memory iterator, but not for one backed by a remote source.
+            // The iterator is ended from `read` rather than here, because `_end` notifies the listeners that
+            // are attached at that moment and then drops them, and a consumer may not have attached any yet.
+            if (this.leftMap.size === 0)
+            {
+                this.rightUnused = true;
+                return;
+            }
+
             this.right.on('readable', () => this.readable = true);
             this.right.on('end', () => { if (!this.hasResults()) this._end(); });
         }
@@ -65,6 +77,12 @@ class HashJoin extends AsyncIterator
         while(true) {
             if (this.ended || !this.readable)
                 return null;
+
+            if (this.rightUnused)
+            {
+                this._end();
+                return null;
+            }
 
             while (this.matchIdx < this.matches.length)
             {
