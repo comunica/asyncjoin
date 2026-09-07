@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v1.2.5"></a>
+## [v1.2.5](https://github.com/comunica/asyncjoin/compare/v1.2.4...v1.2.5) - 2026-09-07
+
+### Changed
+* [Stop reading the right stream when the hash table is empty (#23)](https://github.com/comunica/asyncjoin/commit/d663a534c8dee20e76323bf02f332243604b2351)
+
 <a name="v1.2.4"></a>
 ## [v1.2.4](https://github.com/comunica/asyncjoin/compare/v1.2.3...v1.2.4) - 2024-09-24
 
