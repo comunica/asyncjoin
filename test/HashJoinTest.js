@@ -82,3 +82,27 @@ describe('HashJoin with uint32 hashes', () =>
         });
     });
 });
+
+describe('HashJoin with a consumer that reads one item at a time', () =>
+{
+    it('emits all matches of the last right item after the right stream ended', done =>
+    {
+        const stream = new HashJoin(new ArrayIterator([ 'a', 'b' ]), new ArrayIterator([ 'r' ]), () => 1, (left, right) => `${left}-${right}`);
+        const results = [];
+        // Reading asynchronously lets the right stream end while 'b' is still pending
+        stream.on('readable', function readNext ()
+        {
+            const item = stream.read();
+            if (item !== null)
+            {
+                results.push(item);
+                setImmediate(readNext);
+            }
+        });
+        stream.on('end', () =>
+        {
+            assert.deepStrictEqual(results, [ 'a-r', 'b-r' ]);
+            done();
+        });
+    });
+});
