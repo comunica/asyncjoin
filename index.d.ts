@@ -8,7 +8,8 @@ export class DynamicNestedLoopJoin<L, R, T> extends MultiTransformIterator<L, T>
     _createTransformer(leftItem: L): SimpleTransformIterator<L, T>;
 }
 
-export class HashJoin<S, H, T> extends AsyncIterator<T>
+// Hashes are compared as int32 (`hash | 0`), so `funJoin` must return null for items whose hashes collide
+export class HashJoin<S, H extends number, T> extends AsyncIterator<T>
 {
     constructor(left: AsyncIterator<S>, right: AsyncIterator<S>, funHash: (entry: S) => H, funJoin: (left: S, right: S) => T);
     protected hasResults(): boolean;

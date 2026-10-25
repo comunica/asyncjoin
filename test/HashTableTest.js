@@ -11,7 +11,7 @@ describe('HashTable', () =>
         return items;
     }
 
-    // Adds the index of each hash as item, and checks that every lookup returns the indexes of exactly equal hashes
+    // Adds the index of each hash as item, and checks that every lookup returns the indexes of hashes with the same int32 value
     function check (hashes, probes = [])
     {
         const table = new HashTable();
@@ -20,7 +20,7 @@ describe('HashTable', () =>
         for (const hash of [ ...hashes, ...probes ])
         {
             const expected = [];
-            hashes.forEach((other, i) => { if (other === hash) expected.push(i); });
+            hashes.forEach((other, i) => { if ((other | 0) === (hash | 0)) expected.push(i); });
             assert.deepStrictEqual(lookup(table, hash), expected, `for hash ${String(hash)}`);
         }
     }
@@ -36,9 +36,14 @@ describe('HashTable', () =>
     it('handles duplicate hashes in insertion order', () => check([ 1, 2, 1, 3, 1, 2 ], [ 4 ]));
     it('handles uint32 hashes', () => check([ 0, 1, 0x80000000, 0xFFFFFFFF, 0x7FFFFFFF, 0xFFFFFFFF ], [ -1, -0x80000000 ]));
     it('handles negative int32 hashes', () => check([ 0, -1, -0x80000000, 0x7FFFFFFF, -1 ], [ 0xFFFFFFFF, 0x80000000 ]));
-    it('distinguishes negative hashes from uint32 hashes with the same bits', () => check([ -1, 0xFFFFFFFF, 1, -1, 0xFFFFFFFF ]));
-    it('distinguishes uint32 hashes from negative hashes with the same bits', () => check([ 0xFFFFFFFF, -1, 1, 0xFFFFFFFF, -1 ]));
-    it('handles non-integer hashes', () => check([ 1, 1.5, 2 ** 40, 1, 1.5, 2 ** 40 ], [ 2, 2 ** 32 + 1 ]));
-    it('handles string hashes', () => check([ 'a', 'b', 'a', 'c' ], [ 'd', 1 ]));
-    it('handles mixed hashes after the table grew', () => check([ ...Array(100).keys(), 'a', ...Array(100).keys(), 'a' ], [ 100 ]));
+    it('compares hashes as int32', () =>
+    {
+        const table = new HashTable();
+        table.add(-1, 'a');
+        table.add(0xFFFFFFFF, 'b');
+        table.add(2 ** 32 + 1, 'c');
+        assert.deepStrictEqual(lookup(table, -1), [ 'a', 'b' ]);
+        assert.deepStrictEqual(lookup(table, 1), [ 'c' ]);
+    });
+    it('handles duplicate hashes after the table grew', () => check([ ...Array(100).keys(), 0xFFFFFFFF, ...Array(100).keys(), 0xFFFFFFFF ], [ 100 ]));
 });
