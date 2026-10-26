@@ -1,19 +1,23 @@
 const INITIAL_CAPACITY = 16;
 
-// Multimap from hashes to items, iterated per hash in insertion order through item indexes.
+// A Multimap that is optimized for SMIs (int32).
+// This is used instead of `Map` which lacks this SMI optimization.
 // Hashes are compared as int32 (`hash | 0`), so uint32 hashes keep their identity, but other numbers may collide.
-// Items are stored in insertion order, items with the same hash are chained through `nexts`,
-// and `tails` holds the last item of each chain, indexed by the chain's first item.
-// Chains are found through an open-addressing table of hash keys (`slotKeys`) and first items (`slotHeads`).
 class HashTable
 {
     constructor ()
     {
+        // All items in insertion order
         this.items = [];
+        // Per item: index of the next item with the same hash, or -1
         this.nexts = new Int32Array(INITIAL_CAPACITY);
+        // Per item: index of the last item with the same hash
         this.tails = new Int32Array(INITIAL_CAPACITY);
+        // Per slot: item hash
         this.slotKeys = new Int32Array(INITIAL_CAPACITY);
+        // Per slot: first item index of that hash's chain (+ 1)
         this.slotHeads = new Int32Array(INITIAL_CAPACITY); // Item index + 1, so 0 marks an empty slot
+        // Number of used slots (distinct hashes)
         this.slotCount = 0;
     }
 
