@@ -1,5 +1,6 @@
 
 let AsyncIterator = require('asynciterator').AsyncIterator;
+let HashTable = require('../util/HashTable');
 
 // https://en.wikipedia.org/wiki/Hash_join
 class HashJoin extends AsyncIterator
@@ -14,12 +15,11 @@ class HashJoin extends AsyncIterator
         this.funHash = funHash;
         this.funJoin = funJoin;
 
-        this.leftMap = new Map();
+        this.leftTable = new HashTable();
         this.rightUnused = false;
 
         this.match    = null;
-        this.matches  = [];
-        this.matchIdx = 0;
+        this.matchIdx = -1;
 
         this.left.on('error', (error) => this.destroy(error));
         this.right.on('error', (error) => this.destroy(error));
@@ -36,7 +36,7 @@ class HashJoin extends AsyncIterator
             // Reading it is cheap for an in-memory iterator, but not for one backed by a remote source.
             // The iterator is ended from `read` rather than here, because `_end` notifies the listeners that
             // are attached at that moment and then drops them, and a consumer may not have attached any yet.
-            if (this.leftMap.size === 0)
+            if (this.leftTable.size === 0)
             {
                 this.rightUnused = true;
                 return;
@@ -60,7 +60,7 @@ class HashJoin extends AsyncIterator
 
     hasResults ()
     {
-        return !this.right.ended || this.matchIdx < this.matches.length;
+        return !this.right.ended || this.matchIdx >= 0;
     }
 
     _end ()
@@ -84,9 +84,10 @@ class HashJoin extends AsyncIterator
                 return null;
             }
 
-            while (this.matchIdx < this.matches.length)
+            while (this.matchIdx >= 0)
             {
-                let item = this.matches[this.matchIdx++];
+                let item = this.leftTable.get(this.matchIdx);
+                this.matchIdx = this.leftTable.next(this.matchIdx);
                 let result = this.funJoin(item, this.match);
                 if (result !== null)
                     return result;
@@ -103,9 +104,7 @@ class HashJoin extends AsyncIterator
                 return null;
             }
 
-            let hash = this.funHash(this.match);
-            this.matches = this.leftMap.get(hash) || [];
-            this.matchIdx = 0;
+            this.matchIdx = this.leftTable.first(this.funHash(this.match));
         }
     }
 
@@ -123,13 +122,7 @@ class HashJoin extends AsyncIterator
 
         function addItem(item)
         {
-            let hash = this.funHash(item);
-            let arr = this.leftMap.get(hash);
-            if (!arr) {
-                arr = [];
-                this.leftMap.set(hash, arr);
-            }
-            arr.push(item);
+            this.leftTable.add(this.funHash(item), item);
         }
     }
 }
