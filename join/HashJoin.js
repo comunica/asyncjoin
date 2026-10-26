@@ -16,6 +16,7 @@ class HashJoin extends AsyncIterator
         this.funJoin = funJoin;
 
         this.leftTable = new HashTable();
+        this.leftEnded = false;
         this.rightUnused = false;
 
         this.match    = null;
@@ -24,12 +25,16 @@ class HashJoin extends AsyncIterator
         this.left.on('error', (error) => this.destroy(error));
         this.right.on('error', (error) => this.destroy(error));
 
-        this.readable = false;
+        // The left stream is only read once this iterator is read, so that a join that is never read,
+        // such as one that is destroyed before being consumed, does not consume its inputs.
+        // Being readable until then makes consumers call read.
+        this.readable = true;
 
         this.left.on('end', allowJoining.bind(this));
 
         function allowJoining ()
         {
+            this.leftEnded = true;
             this.readable = true;
 
             // An inner join over an empty hash table produces nothing, so the right stream never has to be read.
@@ -45,17 +50,6 @@ class HashJoin extends AsyncIterator
             this.right.on('readable', () => this.readable = true);
             this.right.on('end', () => { if (!this.hasResults()) this._end(); });
         }
-
-        this.on('newListener', (eventName) =>
-        {
-            if (eventName === 'data')
-            {
-                this._addDataListenerIfNeeded();
-            }
-        });
-        if (this.left.readable)
-            this._addDataListenerIfNeeded();
-        this.left.on('readable', () => this._addDataListenerIfNeeded());
     }
 
     hasResults ()
@@ -72,7 +66,13 @@ class HashJoin extends AsyncIterator
 
     read ()
     {
-        this._addDataListenerIfNeeded();
+        // Results only follow once the whole left stream is in the hash table
+        if (!this.leftEnded)
+        {
+            this._addDataListenerIfNeeded();
+            this.readable = false;
+            return null;
+        }
 
         while(true) {
             if (this.ended || !this.readable)
