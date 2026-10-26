@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+<a name="v2.0.0"></a>
+## [v2.0.0](https://github.com/comunica/asyncjoin/compare/v1.2.5...v2.0.0) - 2026-10-26
+
+### BREAKING CHANGES
+* [Optimize HashJoin with SMI-aware hash table (#24)](https://github.com/comunica/asyncjoin/commit/45c69f43355d70fe54078aa921d3cd81aa3929fd)
+    This means that HashJoin can only be used with (small) ints now.
+
 <a name="v1.2.5"></a>
 ## [v1.2.5](https://github.com/comunica/asyncjoin/compare/v1.2.4...v1.2.5) - 2026-09-07
 
