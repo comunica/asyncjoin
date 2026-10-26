@@ -25,9 +25,6 @@ class HashJoin extends AsyncIterator
         this.left.on('error', (error) => this.destroy(error));
         this.right.on('error', (error) => this.destroy(error));
 
-        // The left stream is only read once this iterator is read, so that a join that is never read,
-        // such as one that is destroyed before being consumed, does not consume its inputs.
-        // Being readable until then makes consumers call read.
         this.readable = true;
 
         this.left.on('end', allowJoining.bind(this));
